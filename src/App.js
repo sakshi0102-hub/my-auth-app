@@ -1,25 +1,34 @@
-import logo from './logo.svg';
+// src/App.js
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LoginPage from './LoginPage';
+import HomePage from './HomePage';
+import withAuth from './withAuth';
 import './App.css';
 
-function App() {
+const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const login = () => {
+    setIsAuthenticated(true);
+  };
+
+  const logout = () => {
+    localStorage.removeItem('username');
+    localStorage.removeItem('password');
+    setIsAuthenticated(false);
+  };
+
+  const AuthenticatedHomePage = withAuth(HomePage);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<LoginPage login={login} />} />
+        <Route path="/" element={<AuthenticatedHomePage logout={logout} />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
